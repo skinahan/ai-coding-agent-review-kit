@@ -1,0 +1,48 @@
+name: AI Review Kit interest
+description: Get the checklist and share feedback on AI-generated PR review pain.
+title: "AI Review Kit interest: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for checking out the AI Coding Agent Review Kit. Use this form to share which coding agent you use and what makes AI-generated PRs hardest to review.
+  - type: dropdown
+    id: primary-agent
+    attributes:
+      label: Primary coding agent
+      description: Which coding agent do you use most?
+      options:
+        - Codex
+        - Claude Code
+        - Cursor
+        - Copilot
+        - Devin
+        - Windsurf
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: review-pain
+    attributes:
+      label: What makes AI-generated PRs hardest to review?
+      description: A sentence or two is enough.
+      placeholder: "Example: the diff looks reasonable, but I do not trust the edge cases or auth changes."
+    validations:
+      required: false
+  - type: dropdown
+    id: full-kit-interest
+    attributes:
+      label: Would you want the full kit when it launches?
+      options:
+        - Yes
+        - Maybe
+        - Not right now
+    validations:
+      required: true
+  - type: textarea
+    id: contact
+    attributes:
+      label: Optional contact
+      description: Leave an email, LinkedIn, or GitHub handle if you want follow-up.
+    validations:
+      required: false
