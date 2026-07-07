@@ -2,29 +2,30 @@
 
 Lightweight review materials for catching risky AI-generated code before it reaches production.
 
-This repository contains a free 15-minute checklist for reviewing pull requests created or modified by AI coding agents.
+**Start here:** [Worked example — reviewing a synthetic agent PR](example_agent_pr_walkthrough.md)
 
-Landing page:
+This repository contains:
 
-https://skinahan.github.io/ai-coding-agent-review-kit/
+- A free [15-minute checklist](15_minute_ai_pr_review_checklist.md) for reviewing pull requests from AI coding agents
+- A [worked walkthrough](example_agent_pr_walkthrough.md) showing scope drift, weak tests, and happy-path-only handlers on a plausible diff
 
-Feedback form:
+**Landing page:** https://skinahan.github.io/ai-coding-agent-review-kit/
 
-https://github.com/skinahan/ai-coding-agent-review-kit/issues/new?template=ai-review-kit-interest.yml
+## What this helps with
 
-## Assets
-
-- `15_minute_ai_pr_review_checklist.md` - checklist source
-- `15_minute_ai_pr_review_checklist.html` - standalone HTML checklist
-- `docs/index.html` - landing page
-
-## What This Helps With
-
-- Scope drift in agent-generated diffs
+- Scope drift buried in "refactor" commits
 - Edge cases hidden behind plausible code
-- Security and data-risk checks
-- Tests that look useful but do not prove behavior
-- Reviewer notes for follow-up decisions
+- Security and permission changes without tests
+- Tests that pass but do not prove behavior
+
+## Files
+
+| File | Purpose |
+| --- | --- |
+| `example_agent_pr_walkthrough.md` | Teaching walkthrough (start here) |
+| `15_minute_ai_pr_review_checklist.md` | Reusable checklist |
+| `docs/index.html` | Landing page |
+| `example_agent_pr_walkthrough.html` | Walkthrough (GitHub Pages) |
 
 ## Feedback
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Worked Example: Reviewing an Agent-Generated PR</title>
+  <style>
+    :root {
+      --bg: #f6f7f8;
+      --ink: #1a1f24;
+      --muted: #5c6670;
+      --line: #dde2e6;
+      --card: #fff;
+      --accent: #1f5a8a;
+      --flag: #8b3a2a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 17px;
+    }
+    main { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
+    h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 1.2rem; margin: 36px 0 12px; border-top: 1px solid var(--line); padding-top: 28px; }
+    h3 { font-size: 1rem; margin: 20px 0 8px; }
+    p, li { color: var(--muted); }
+    strong { color: var(--ink); }
+    .meta { font-size: 0.9rem; margin-bottom: 24px; }
+    .nav { margin-bottom: 28px; font-size: 0.9rem; }
+    pre {
+      background: #1e2428;
+      color: #e8eaed;
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    code { font-family: ui-monospace, monospace; }
+    .flag { color: var(--flag); font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95rem; }
+    th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+    th { background: var(--card); color: var(--ink); }
+    .outcome {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--flag);
+      padding: 16px 18px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: var(--ink);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="nav"><a href="index.html">← Review Kit</a></p>
+    <h1>Worked example: reviewing an agent-generated PR</h1>
+    <p class="meta"><strong>Synthetic teaching scenario.</strong> Plausible code you might merge on a skim. That is the point.</p>
+
+    <h2>Setup</h2>
+    <p>I asked Cursor to add <code>PATCH /api/widgets/:id</code> for admin users — update a widget label, return JSON, 404 if missing. Small task. PR landed Friday. Diff looked tidy. Tests green. I almost merged before dinner.</p>
+    <p>I ran the checklist instead. About twelve minutes. Glad I did.</p>
+    <p><strong>Files changed:</strong> <code>routes/widgets.ts</code>, <code>middleware/auth.ts</code>, <code>tests/widgets.test.ts</code>, <code>config/defaults.ts</code></p>
+
+    <h2>The diff (abbreviated)</h2>
+    <h3>routes/widgets.ts — looks fine at first glance</h3>
+<pre><code>export async function patchWidget(req, res) {
+  const { id } = req.params;
+  const { label } = req.body;
+  if (!label || label.trim() === "") {
+    return res.status(400).json({ error: "label required" });
+  }
+  const widget = await db.widgets.update(id, { label: label.trim() });
+  if (!widget) return res.status(404).json({ error: "not found" });
+  return res.json(widget);
+}</code></pre>
+
+    <h3>middleware/auth.ts — scope drift in a "refactor"</h3>
+<pre><code>// Before: adminOnly — role === 'admin'
+// After: requireRole(['admin', 'editor'])
+// Comment: "Refactored auth helper for flexibility."</code></pre>
+    <p>I did not ask for editors. Admin only.</p>
+
+    <h3>tests/widgets.test.ts — green but hollow</h3>
+<pre><code>it("updates widget label", async () => {
+  const res = await request(app)
+    .patch("/api/widgets/w1")
+    .send({ label: "New Label" });
+  expect(res.status).toBe(200);
+});</code></pre>
+    <p>No auth header. No 404. No empty-label case.</p>
+
+    <h3>config/defaults.ts — unrelated</h3>
+<pre><code>export const WIDGET_CACHE_TTL_SECONDS = 300; // was 60</code></pre>
+    <p>Nothing in my prompt mentioned caching.</p>
+
+    <h2>Checklist pass</h2>
+    <h3>1. Scope drift — <span class="flag">FLAG</span></h3>
+    <p>Editors allowed in auth middleware — not in spec. Cache TTL changed — unrelated. The route file alone would have been enough.</p>
+    <p><strong>Would have missed:</strong> Permission widening is the highest-risk change. It is not in the route file I skimmed first.</p>
+
+    <h3>2. Behavior &amp; edge cases — <span class="flag">FLAG</span></h3>
+    <p>Empty label rejected — good. No tests for non-admin callers, malformed JSON, or length limits. Happy path only.</p>
+
+    <h3>4. Test reality — <span class="flag">FLAG</span></h3>
+    <p>Single test without auth — may pass even if middleware were removed. Would not fail if empty-label validation were deleted. Performative.</p>
+
+    <h3>6. Agent self-review</h3>
+    <p>Agent flagged editor scope expansion, missing auth tests, and unrelated config — same items I found.</p>
+
+    <div class="outcome">
+      <p><strong>Decision: Revise — do not merge.</strong></p>
+      <p>Revert auth to admin-only (or decide editors explicitly). Revert cache change or split PR. Add tests: 401, 403, 400 empty label, 404.</p>
+    </div>
+
+    <h2>Use the full checklist</h2>
+    <p>This is one scenario. The reusable pass:</p>
+    <a class="btn" href="15_minute_ai_pr_review_checklist.html">15-minute checklist</a>
+    <p style="margin-top:24px;font-size:0.85rem">Synthetic scenario for teaching. <a href="https://github.com/skinahan/ai-coding-agent-review-kit/issues/new?template=ai-review-kit-interest.yml">Feedback welcome</a>.</p>
+  </main>
+</body>
+</html>

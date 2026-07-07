@@ -1,5 +1,7 @@
 # 15-Minute AI PR Review Checklist
 
+> **New here?** Start with the [worked example](example_agent_pr_walkthrough.md) — a synthetic agent PR reviewed section by section.
+
 Use this when a pull request was substantially generated or modified by an AI coding agent.
 
 This is not a replacement for human accountability. It is a fast review pass for the failure modes that show up when AI-generated code looks polished before anyone has inspected it closely.
