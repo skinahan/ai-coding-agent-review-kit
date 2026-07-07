@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>15-Minute AI PR Review Checklist</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<p><a href="example_agent_pr_walkthrough.html">New here? Start with the worked example.</a></p>
+<header id="title-block-header">
+<h1 class="title">15-Minute AI PR Review Checklist</h1>
+</header>
+<h1 id="minute-ai-pr-review-checklist">15-Minute AI PR Review
+Checklist</h1>
+<p>Use this when a pull request was substantially generated or modified
+by an AI coding agent.</p>
+<p>This is not a replacement for human accountability. It is a fast
+review pass for the failure modes that show up when AI-generated code
+looks polished before anyone has inspected it closely.</p>
+<h2 id="the-60-second-context-check">0. The 60-Second Context Check</h2>
+<p>Before reviewing code, answer these three questions:</p>
+<ol type="1">
+<li>What was the agent asked to do?</li>
+<li>Which files did it change?</li>
+<li>What would break if the agent misunderstood the task?</li>
+</ol>
+<p>If you cannot answer all three, stop and request more context before
+reviewing.</p>
+<h2 id="scope-drift---2-minutes">1. Scope Drift - 2 Minutes</h2>
+<p>Look for changes outside the requested task.</p>
+<p>Check:</p>
+<ul>
+<li>Files unrelated to the original request</li>
+<li>Auth, billing, permissions, migrations, secrets, deployment config,
+or data deletion</li>
+<li>Large rewrites where a small change was requested</li>
+<li>Behavior changes without matching tests</li>
+<li>Test changes without a clear behavior change</li>
+</ul>
+<p>Slow down if the PR is broader than the task.</p>
+<h2 id="behavior-and-edge-cases---3-minutes">2. Behavior And Edge Cases
+- 3 Minutes</h2>
+<p>Read the core changed path.</p>
+<p>Ask:</p>
+<ul>
+<li>Does the code actually implement the requested behavior?</li>
+<li>What happens with empty, malformed, missing, duplicate, or
+unauthorized input?</li>
+<li>Are previous behaviors preserved?</li>
+<li>Are retries, timeouts, and failure paths handled?</li>
+<li>Are user-visible errors understandable?</li>
+</ul>
+<p>Slow down if the code only handles the happy path.</p>
+<h2 id="security-and-data-risk---3-minutes">3. Security And Data Risk -
+3 Minutes</h2>
+<p>Scan for:</p>
+<ul>
+<li>New or changed authorization checks</li>
+<li>Permission bypasses</li>
+<li>Trust in client-provided data</li>
+<li>Secret or token logging</li>
+<li>Unsafe file or path handling</li>
+<li>Raw SQL or query construction</li>
+<li>Cross-tenant data access</li>
+<li>Changed CORS, cookies, sessions, or token handling</li>
+<li>PII in logs, prompts, fixtures, or tests</li>
+</ul>
+<p>Slow down if security-adjacent code changed without explicit
+tests.</p>
+<h2 id="test-reality---2-minutes">4. Test Reality - 2 Minutes</h2>
+<p>Do not just check whether tests exist.</p>
+<p>Ask:</p>
+<ul>
+<li>Would the tests fail if the important behavior were removed?</li>
+<li>Is there at least one negative or edge-case test?</li>
+<li>Is there a regression test for the bug or request?</li>
+<li>Did the agent delete, weaken, skip, or over-mock tests?</li>
+<li>Are tests asserting behavior, or merely matching the current
+implementation?</li>
+</ul>
+<p>Slow down if tests look performative.</p>
+<h2 id="system-fit---2-minutes">5. System Fit - 2 Minutes</h2>
+<p>Ask what the agent may not have seen.</p>
+<p>Check:</p>
+<ul>
+<li>Runtime config</li>
+<li>Environment variables</li>
+<li>External APIs</li>
+<li>Generated files</li>
+<li>Schema, client, or API-doc updates</li>
+<li>Deploy order</li>
+<li>Backward compatibility</li>
+</ul>
+<p>Slow down if the code compiles locally but changes a contract
+elsewhere.</p>
+<h2 id="agent-self-review---2-minutes">6. Agent Self-Review - 2
+Minutes</h2>
+<p>Paste this into the coding agent before final human approval:</p>
+<pre class="text"><code>Review your own changes as if they were submitted by another developer. Focus only on likely defects, security risks, missed edge cases, stale tests, and scope drift. Do not praise the code.
+
+Return:
+1. The three highest-risk assumptions in this PR.
+2. Any changed behavior not covered by tests.
+3. Any security, auth, data, migration, or compatibility risk.
+4. The smallest additional check or test that would most reduce risk.</code></pre>
+<p>Slow down if the agent identifies a real risk the PR has not
+addressed.</p>
+<h2 id="merge-decision">Merge Decision</h2>
+<p>Merge only if:</p>
+<ul>
+<li>The scope matches the task.</li>
+<li>The core behavior is clear.</li>
+<li>Security and data risks are absent or tested.</li>
+<li>Tests protect the intended behavior.</li>
+<li>Integration impacts are understood.</li>
+</ul>
+<p>Revise, split, or escalate if:</p>
+<ul>
+<li>The PR touched high-risk code.</li>
+<li>The diff is broader than requested.</li>
+<li>The agent cannot explain edge cases.</li>
+<li>Tests do not prove meaningful behavior.</li>
+<li>Review depends on “the agent probably handled it.”</li>
+</ul>
+<h2 id="reviewer-note-template">Reviewer Note Template</h2>
+<pre class="text"><code>AI PR review result:
+
+- Scope drift: none / minor / material
+- Security or data risk: none / needs follow-up
+- Test confidence: low / medium / high
+- Integration concern: none / needs follow-up
+- Decision: merge / revise / split / escalate
+
+Main reason:</code></pre>
+<h2 id="reminder">Reminder</h2>
+<p>AI-generated code is still your code once it merges. The checklist
+exists to make that responsibility easier to discharge, not to move it
+onto the tool.</p>
+</body>
+</html>
